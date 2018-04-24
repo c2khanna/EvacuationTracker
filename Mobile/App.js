@@ -1,23 +1,63 @@
 import React from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, Text, View, Picker, Alert } from 'react-native';
+import Ionicons from 'react-native-vector-icons/Ionicons';
+import { TabNavigator, TabBarBottom } from 'react-navigation';
 
-export default class App extends React.Component {
+class HomeScreen extends React.Component {
   render() {
     return (
-      <View style={styles.container}>
-        <Text>This is Evacuation Tracker</Text>
-        <Text>Know what zones have been evacuated successfully</Text>
-        <Text>Shake your phone to open the developer menu.</Text>
+      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+        <Text>Map</Text>
+        <Picker
+          selectedValue="Java"
+          style={{ height: 50, width: 100 }}
+          onValueChange={(itemValue, itemIndex) => this.setState({language: itemValue})}>
+          <Picker.Item label="Java" value="java" />
+          <Picker.Item label="JavaScript" value="js" />
+        </Picker>
       </View>
     );
   }
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
+class SettingsScreen extends React.Component {
+  render() {
+    return (
+      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+        <Text>Table</Text>
+      </View>
+    );
+  }
+}
+
+export default TabNavigator(
+  {
+    Map: { screen: HomeScreen },
+    Table: { screen: SettingsScreen },
   },
-});
+  {
+    navigationOptions: ({ navigation }) => ({
+      tabBarIcon: ({ focused, tintColor }) => {
+        const { routeName } = navigation.state;
+        let iconName;
+        if (routeName === 'Map') {
+          iconName = `ios-pin${focused ? '' : '-outline'}`;
+        } else if (routeName === 'Table') {
+          iconName = `ios-grid${focused ? '' : '-outline'}`;
+        }
+
+        // You can return any component that you like here! We usually use an
+        // icon component from react-native-vector-icons
+        return <Ionicons name={iconName} size={25} color={tintColor} />;
+      },
+    }),
+    tabBarOptions: {
+      activeTintColor: 'tomato',
+      inactiveTintColor: 'gray',
+    },
+    tabBarComponent: TabBarBottom,
+    tabBarPosition: 'bottom',
+    animationEnabled: false,
+    swipeEnabled: false,
+  }
+);
